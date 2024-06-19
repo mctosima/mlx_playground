@@ -9,7 +9,6 @@ import mlx.core as mx
 import numpy as np
 from PIL import Image
 
-np.random.seed(2024)
 
 class HouseholdWasteDataset:
     def __init__(
@@ -24,6 +23,7 @@ class HouseholdWasteDataset:
         
         # if json file is not available, create the split and store it to json file
         if not os.path.exists(json_split):
+            np.random.seed(2024)
             print(f"JSON file not found. Creating split and store it to {json_split}")
             # get img labels
             img_label = os.listdir(root_dir)
@@ -118,22 +118,16 @@ if __name__ == "__main__":
     intersection = set(dataset_hhwd.img_paths).intersection(set(dataset_hhwd_test.img_paths))
     print(f"Intersection between train and test dataset: {len(intersection)}")
     print(f"Intersection: {intersection}")
-    
-    # # check if there's any train dataset in the test dataset
-    # full_path_train = [os.path.basename(path) for path in dataset_hhwd.img_paths]
-    # full_path_test = [os.path.basename(path) for path in dataset_hhwd_test.img_paths]
-    # print(f"Length of train dataset: {len(full_path_train)}")
-    # print(f"Length of test dataset: {len(full_path_test)}")
-    
-    # # find intersection between train and test dataset
-    # intersection = set(full_path_train).intersection(set(full_path_test))
-    # print(f"Intersection between train and test dataset: {len(intersection)}")
-    # print(f"Intersection: {intersection}")
+    print(f"Train dataset: {len(dataset_hhwd)} | Test dataset: {len(dataset_hhwd_test)}")
     
     # Preview the image
-    # sample_img, sample_label = dataset_hhwd[0]
-    # plt.figure(figsize=(5, 5))
-    # plt.imshow(sample_img.transpose(1, 2, 0))
-    # plt.title(sample_label)
-    # plt.axis("off")
-    # plt.show()
+    rnd_idx = np.random.randint(len(dataset_hhwd))
+    sample_img, sample_label = dataset_hhwd[rnd_idx]
+    sample_img = sample_img.transpose(1, 2, 0)
+    # renormalize the image
+    sample_img = (sample_img * mx.array([0.229, 0.224, 0.225])) + mx.array([0.485, 0.456, 0.406])
+    plt.figure(figsize=(5, 5))
+    plt.imshow(sample_img)
+    plt.title(sample_label)
+    plt.axis("off")
+    plt.show()
