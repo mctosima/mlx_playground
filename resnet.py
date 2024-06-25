@@ -171,7 +171,10 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def _forward_impl(self, x):
+        # print(f"Input shape: {x.shape}")
+        # print(f"Weights shape: {self.conv1.weight.shape}")
         x = self.conv1(x)
+        # print(f"Conv1 shape: {x.shape}")
         x = self.bn1(x)
         x = self.relu(x)
         x = self.maxpool(x)
