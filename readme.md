@@ -1,4 +1,6 @@
-# Requirements and Installation
+# Run Image Classification on Apple Silicon (Mac)
+
+## Requirements and Installation
 1. Apple Silicon Devices
 2. I used Python 3.10
 3. Install the requirements using
@@ -7,13 +9,13 @@
     ```
 4. Activate the environment and Run `train.py`
 
-# Dataset
+## Dataset
 The dataset is available at [Kaggle - Recyclable and household dataset](https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification). However, I have already create a script to download the dataset inside the code.
 
-# Models
+## Models
 I'm using the resnet model for MLX. Obtained from [this link](https://github.com/Aavache/mlx-resnet)
 
-# Run Log
+## Run Log
 ```bash
 Unique labels: [0 1 2 3 4]
 Num classes: 5
