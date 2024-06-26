@@ -16,18 +16,26 @@ class HouseholdWasteDataset:
         split: str = "train",
         transform=None,
         json_split: str = "household_waste_split.json",
+        partial: float = 1,
     ):
         self.root_dir = root_dir
         self.transform = transform if transform else get_transforms()
         self.label_mapping = {}  # Add a mapping dictionary
         self.inverse_label_mapping = {}  # Add an inverse mapping dictionary
 
+        if partial < 1:
+            json_split = f"household_waste_split_{partial}.json"
+
         # if json file is not available, create the split and store it to json file
         if not os.path.exists(json_split):
-            np.random.seed(2024)
+            # np.random.seed(2024)
             print(f"JSON file not found. Creating split and store it to {json_split}")
-            # get img labels
+            # get img category
             img_label = os.listdir(root_dir)
+
+            # only use partial of the dataset category
+            partial_val = int(partial * len(img_label))
+            img_label = img_label[:partial_val]
 
             # if .DS_Store is available, remove it
             if ".DS_Store" in img_label:
@@ -62,17 +70,15 @@ class HouseholdWasteDataset:
             }
 
             # store this split to external single json file
-            with open("household_waste_split.json", "w") as f:
+            with open(json_split, "w") as f:
                 json.dump(json_object, f)
 
-        # if json file is available, load the split from json file
-        else:
-            print(f"JSON file found. Loading split from {json_split}")
-            with open(json_split, "r") as f:
-                json_object = json.load(f)
+        print(f"JSON file found. Loading split from {json_split}")
+        with open(json_split, "r") as f:
+            json_object = json.load(f)
 
-            self.train_img_paths = json_object["train"]
-            self.val_img_paths = json_object["val"]
+        self.train_img_paths = json_object["train"]
+        self.val_img_paths = json_object["val"]
 
         if split == "train":
             self.img_paths = self.train_img_paths
@@ -91,15 +97,12 @@ class HouseholdWasteDataset:
         img = Image.open(img_path)
         img = np.array(img)
         label = self.extract_label(img_path)
-        # print(f"Label: {label} | Label type: {type(label)}")
         # 2. apply any transformation (optional)
         if self.transform:
             img = self.transform(image=img)["image"]
 
         # 3. Convert the image to tensor
         img = mx.array(img)
-        # 4. Reshape from (H, W, C) to (C, H, W)
-        # img = img.transpose(2, 0, 1)
         return img, label
 
     def extract_label(self, img_path):
@@ -114,7 +117,10 @@ class HouseholdWasteDataset:
             label = path.split(os.sep)[-3]
             unique_labels.add(label)
         self.label_mapping = {label: idx for idx, label in enumerate(unique_labels)}
-        self.inverse_label_mapping = {idx: label for label, idx in self.label_mapping.items()}
+        self.inverse_label_mapping = {
+            idx: label for label, idx in self.label_mapping.items()
+        }
+
 
 def get_transforms():
     return A.Compose(
@@ -134,16 +140,19 @@ def get_transforms():
         ]
     )
 
+
 if __name__ == "__main__":
     dataset_hhwd = HouseholdWasteDataset(
         root_dir="recyclable-and-household-waste-classification/images/images",
         split="train",
         transform=get_transforms(),
+        partial=0.2,
     )
     dataset_hhwd_test = HouseholdWasteDataset(
         root_dir="recyclable-and-household-waste-classification/images/images",
         split="val",
         transform=get_transforms(),
+        partial=0.2,
     )
 
     intersection = set(dataset_hhwd.img_paths).intersection(
@@ -158,7 +167,7 @@ if __name__ == "__main__":
     # Preview the image
     rnd_idx = np.random.randint(len(dataset_hhwd))
     sample_img, sample_label = dataset_hhwd[rnd_idx]
-    sample_img = sample_img.transpose(1, 2, 0)
+    # sample_img = sample_img.transpose(1, 2, 0)
     # renormalize the image
     sample_img = (sample_img * mx.array([0.229, 0.224, 0.225])) + mx.array(
         [0.485, 0.456, 0.406]

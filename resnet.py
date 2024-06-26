@@ -1,6 +1,7 @@
 """This ResNet implementation is based on the one in torchvision.
 available on: https://raw.githubusercontent.com/Aavache/mlx-resnet/main/resnet.py
 """
+
 import mlx.nn as nn
 
 from layers import flatten, global_avg_pool2d, max_pool2d
@@ -137,7 +138,9 @@ class ResNet(nn.Module):
 
         self.inplanes = 64
 
-        self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False)
+        self.conv1 = nn.Conv2d(
+            3, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False
+        )
         self.bn1 = self._norm_layer(self.inplanes)
         self.relu = nn.ReLU()
         self.maxpool = max_pool2d
