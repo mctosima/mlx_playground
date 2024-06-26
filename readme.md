@@ -1,6 +1,20 @@
+# Requirements and Installation
+1. Apple Silicon Devices
+2. I used Python 3.10
+3. Install the requirements using
+    ```
+    pip install -r requirements.txt
+    ```
+4. Activate the environment and Run `train.py`
+
+# Dataset
+The dataset is available at [Kaggle - Recyclable and household dataset](https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification). However, I have already create a script to download the dataset inside the code.
+
+# Models
+I'm using the resnet model for MLX. Obtained from [this link](https://github.com/Aavache/mlx-resnet)
+
+# Run Log
 ```bash
-JSON file found. Loading split from household_waste_split_0.2.json
-JSON file found. Loading split from household_waste_split_0.2.json
 Unique labels: [0 1 2 3 4]
 Num classes: 5
 == Epoch: 0 ==

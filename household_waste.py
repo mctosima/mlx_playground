@@ -1,5 +1,6 @@
 import json
 import os
+import opendatasets as od
 from glob import glob
 
 import albumentations as A
@@ -17,11 +18,17 @@ class HouseholdWasteDataset:
         transform=None,
         json_split: str = "household_waste_split.json",
         partial: float = 1,
+        redownload: bool = False,
     ):
         self.root_dir = root_dir
         self.transform = transform if transform else get_transforms()
         self.label_mapping = {}  # Add a mapping dictionary
         self.inverse_label_mapping = {}  # Add an inverse mapping dictionary
+        
+        if redownload == True or os.path.exists("recyclable-and-household-waste-classification/images/images") == False:
+            print(f"Downloading dataset from kaggle")
+            datasetlink = "https://www.kaggle.com/datasets/alistairking/recyclable-and-household-waste-classification"
+            od.download(datasetlink, force=True)
 
         if partial < 1:
             json_split = f"household_waste_split_{partial}.json"

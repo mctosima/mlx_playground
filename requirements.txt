@@ -1,0 +1,10 @@
+albumentations==1.4.9
+kaggle==1.6.14
+matplotlib==3.9.0
+mlx==0.14.1
+numpy==1.26.4
+opencv-python-headless==4.10.0.84
+opendatasets==0.1.22
+pillow==10.3.0
+scipy==1.13.1
+tqdm==4.66.4

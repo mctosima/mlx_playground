@@ -2,3 +2,4 @@ kaggle.json
 recyclable-and-household-waste-classification
 .DS_Store
 __pycache__
+household_waste_split*
